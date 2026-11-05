@@ -30,10 +30,20 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      # The runner has no Android SDK. This installs cmdline-tools and accepts the licences;
-      # AGP then pulls the exact platform, build-tools, NDK and CMake the build asks for.
-      - name: Android SDK
-        uses: android-actions/setup-android@v3
+      # ubuntu-latest already ships the Android SDK and a matching cmdline-tools, so no
+      # marketplace action is used here: setup-android@v3 still tries to install the "tools"
+      # package, which the SDK repository no longer publishes. Only the licences are refreshed,
+      # the missing platform / build-tools / NDK / CMake are then pulled by AGP itself.
+      - name: Accept SDK licences
+        run: |
+          set -uo pipefail
+          manager=$(command -v sdkmanager || ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -n 1 || true)
+          if [ -n "${manager:-}" ]; then
+            yes | "$manager" --licenses > /dev/null || true
+            echo "licences accepted via $manager"
+          else
+            echo "sdkmanager not found; leaving the runner image licences untouched"
+          fi
 
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v4
