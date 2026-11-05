@@ -6,12 +6,17 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish, e.g. v1.1.0 (leave empty to only build)"
+        required: false
+        type: string
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: build-${{ github.workflow }}-${{ github.ref }}
+  group: build-${{ github.workflow }}-${{ github.ref }}-${{ inputs.tag || 'none' }}
   cancel-in-progress: true
 
 jobs:
@@ -75,3 +80,29 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 30
+
+      # 只有手动触发且填了 tag 才发版；APK 用本 job 刚构建出来的文件，不经过本地。
+      # Release body 来自 docs/releases/<tag>.md：正文与流程分离，缺文件直接失败，不发空壳 release。
+      - name: Publish release
+        if: github.event_name == 'workflow_dispatch' && inputs.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          notes="docs/releases/$TAG.md"
+          if [ ! -f "$notes" ]; then
+            echo "missing $notes: every tag needs a release note, refusing to publish an empty release." >&2
+            exit 1
+          fi
+          apk=$(find app/build/outputs/apk/debug -name '*.apk' | head -n 1)
+          cp "$apk" "PhantomProbe-$TAG.apk"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release edit "$TAG" --notes-file "$notes"
+            gh release upload "$TAG" "PhantomProbe-$TAG.apk" --clobber
+          else
+            gh release create "$TAG" "PhantomProbe-$TAG.apk" \
+              --target "$GITHUB_SHA" \
+              --title "PhantomProbe ${TAG#v}" \
+              --notes-file "$notes"
+          fi
