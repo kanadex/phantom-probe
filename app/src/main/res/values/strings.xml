@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PhantomProbe</string>
+    <string name="app_title">Phantom process limit</string>
+
+    <!-- Status card -->
+    <string name="status_probing">Probing…</string>
+    <string name="status_unknown">Not probed yet</string>
+    <string name="status_relaxed">No children reaped</string>
+    <string name="status_limited">Children reaped by the system</string>
+    <string name="status_not_needed">Not applicable</string>
+    <string name="action_run">Tap to probe again</string>
+    <string name="action_stop">Tap to stop</string>
+
+    <string name="detail_forking">Forking %1$d of %2$d children in the probe process…</string>
+    <string name="detail_settling">%1$d children forked; waiting out the %2$s settle window…</string>
+    <string name="detail_observing">%1$d children forked in %2$s, none reaped. Observing %3$s of %4$s.</string>
+    <string name="detail_limited">The system reaped pid %1$d %2$s into the run; %3$d children were forked.</string>
+    <string name="detail_relaxed">%1$d children survived %2$s of settling and %3$s of observation; none was reaped.</string>
+    <string name="detail_not_needed">This device runs API %1$d, so there is no phantom process cap to enforce.</string>
+    <string name="detail_fork_failed">fork() failed after %1$d children: the process hit its own task limit or ran out of address space.</string>
+    <string name="detail_cancelled">Stopped after %1$d children. This run published no new verdict.</string>
+    <string name="detail_rejected">The previous run had not released its children yet. Tap once more.</string>
+    <string name="detail_lost">The probe process did not answer. It was refused, or it was killed before the run started. Tap to probe again.</string>
+    <string name="detail_unknown">Nothing measured yet. A run forks %1$d sleep-only children and watches whether the system reaps them.</string>
+
+    <string name="summary_limited">The system reaped a child of the recorded run (%1$d children forked).</string>
+    <string name="summary_relaxed">%1$d children survived the recorded run.</string>
+    <string name="summary_not_needed">API %1$d has no phantom process cap.</string>
+    <string name="detail_recorded">Recorded %1$s.</string>
+    <string name="duration_seconds">%1$.1f s</string>
+
+    <string name="tip_cap">Android 12 caps unsandboxed child processes at %1$d per app (AOSP default). This probe forks %2$d children that only sleep: either the system reaps them or it does not.</string>
+    <string name="footnote">The verdict describes one run on this device; re-probe after changing system settings.</string>
+
+    <!-- Processes -->
+    <string name="section_processes">Processes</string>
+    <string name="process_host">Host process</string>
+    <string name="process_host_detail">pid %1$d · Compose UI, dispatches only</string>
+    <string name="process_probe">Probe process (:phantom)</string>
+    <string name="process_probe_idle">idle · fork, waitpid and reap happen here</string>
+    <string name="process_probe_running">pid %1$d · %2$d children forked</string>
+    <string name="process_handshake">Handshake process (:probe)</string>
+    <string name="process_handshake_idle">idle · a second app process, poked on purpose</string>
+    <string name="process_handshake_seen">pid %1$d · acknowledged, then exited</string>
+    <string name="process_handshake_missing">poked, but no acknowledgement in this run</string>
+
+    <!-- Pipeline -->
+    <string name="section_pipeline">Pipeline</string>
+    <string name="stage_fork">Fork children</string>
+    <string name="stage_poke">Poke the second process</string>
+    <string name="stage_settle">Settle</string>
+    <string name="stage_observe">Observe</string>
+    <string name="stage_fork_idle">not started</string>
+    <string name="stage_fork_running">%1$d of %2$d</string>
+    <string name="stage_fork_done">%1$d children in %2$s</string>
+    <string name="stage_poke_idle">waiting</string>
+    <string name="stage_poke_sent">broadcast sent</string>
+    <string name="stage_poke_acked">pid %1$d acknowledged</string>
+    <string name="stage_settle_idle">waiting for a fork</string>
+    <string name="stage_settle_reaped">pid %1$d reaped</string>
+    <string name="stage_settle_done">%1$s elapsed, nothing reaped</string>
+    <string name="stage_observe_skipped">decided in the settle window</string>
+    <string name="stage_observe_idle">no verdict yet</string>
+    <string name="stage_observe_running">%1$s of %2$s</string>
+    <string name="stage_observe_reaped">pid %1$d reaped</string>
+    <string name="stage_observe_done">%1$s elapsed, nothing reaped</string>
+
+    <!-- Explanations -->
+    <string name="section_how">How it works</string>
+    <string name="row_protocol">Detection protocol</string>
+    <string name="row_protocol_desc">Five steps from fork() to verdict</string>
+    <string name="row_isolation">Why a separate process</string>
+    <string name="row_isolation_desc">mmap_lock belongs to the process, not to the thread</string>
+    <string name="section_system">System entry</string>
+    <string name="row_developer_options">Open developer options</string>
+    <string name="row_developer_options_desc">Android 14 and later: turn on Disable child process restrictions</string>
+
+    <string name="sheet_protocol_title">Detection protocol</string>
+    <string name="sheet_protocol_lead">The cap is not readable through any public API, so the probe makes the system enforce it and watches what happens.</string>
+    <string name="sheet_protocol_point_1">Fork 66 children in the probe process. Each one only calls sleep() in a loop: no exec, no return to the JVM, so it stays a phantom process and cannot exit by itself.</string>
+    <string name="sheet_protocol_point_2">Send an explicit broadcast to a second app process. AMS re-counts phantom processes when the app process set changes, so this poke is the trigger, not a formality.</string>
+    <string name="sheet_protocol_point_3">Poll waitpid(pid, WNOHANG) per child. A child that reports back without us killing it was reaped by the system; that is the only evidence used.</string>
+    <string name="sheet_protocol_point_4">Publish early. If nothing is reaped inside the 3 second settle window the verdict becomes no children reaped, and the probe keeps watching for another 60 seconds in case a late trim arrives.</string>
+    <string name="sheet_protocol_point_5">Kill and reap the survivors, then let the probe process exit. Children carry PR_SET_PDEATHSIG, so a probe that dies takes its children with it.</string>
+
+    <string name="sheet_isolation_title">Why a separate process</string>
+    <string name="sheet_isolation_lead">fork() copies the page tables of the calling address space while holding its mmap_lock for the write side.</string>
+    <string name="sheet_isolation_point_1">Every allocation on the UI thread takes the same mmap_lock for the read side, so it waits until the fork finishes. Compose allocates on every frame, which is why the same probe looks harmless in a View app and stalls an expressive UI.</string>
+    <string name="sheet_isolation_point_2">On current hardware 66 forks cost around 300 milliseconds. Lower priority, batching and sleeps do not reduce that total; they only spread it over more frames.</string>
+    <string name="sheet_isolation_point_3">mmap_lock belongs to the address space, not to a thread, so moving the fork to a background thread of the same process changes nothing.</string>
+    <string name="sheet_isolation_point_4">Moved into :phantom, the probe has its own address space and its own lock. The UI process never touches mmap_lock, and the tap stays instant.</string>
+
+</resources>

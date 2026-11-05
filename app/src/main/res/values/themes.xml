@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colours and typography come from Compose; the window only needs a no-action-bar shell. -->
+    <style name="Theme.PhantomProbe" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar" />
+</resources>

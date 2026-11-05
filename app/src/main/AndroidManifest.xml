@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="false"
+        android:enableOnBackInvokedCallback="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PhantomProbe">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.PhantomProbe"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+            fork(), waitpid() and the 66 children live here. mmap_lock is per address space,
+            so this process is what keeps the UI process free of the fork stall.
+        -->
+        <service
+            android:name=".probe.PhantomProbeService"
+            android:exported="false"
+            android:process=":phantom" />
+
+        <!--
+            A second app process, poked on purpose. Its appearance changes the app process set,
+            which is when AMS re-counts phantom processes and trims the excess.
+        -->
+        <receiver
+            android:name=".probe.ProbeHandshakeReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":probe" />
+    </application>
+</manifest>

@@ -1,0 +1,41 @@
+# Version catalog. Every version the build needs lives here; module scripts never hardcode one.
+#
+# The Compose stack is pinned to the expressive line: material3 1.5.0-beta01 carries
+# MaterialExpressiveTheme, MotionScheme and the *Emphasized type styles the UI is built on.
+# Its AAR metadata requires compileSdk 37 and AGP 9.1+, so those two values follow it.
+
+[versions]
+agp = "9.2.1"
+kotlin = "2.4.21"
+coroutines = "1.11.0"
+
+compose = "1.12.1"
+material3 = "1.5.0-beta01"
+materialIcons = "1.7.8"
+activityCompose = "1.13.0"
+lifecycle = "2.11.0"
+coreKtx = "1.19.1"
+
+compileSdk = "37"
+compileSdkMinor = "0"
+targetSdk = "35"
+minSdk = "28"
+
+ndk = "28.1.13356709"
+cmake = "3.22.1"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "compose" }
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+# Core only: the 12 glyphs this UI needs live here. The extended set is ~20 MB of classes.
+compose-material-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIcons" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }

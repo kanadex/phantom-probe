@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PhantomProbe</string>
+    <string name="app_title">phantom 行程限制</string>
+
+    <!-- 狀態卡 -->
+    <string name="status_probing">正在偵測…</string>
+    <string name="status_unknown">尚未偵測</string>
+    <string name="status_relaxed">未觀察到回收</string>
+    <string name="status_limited">子行程被系統回收</string>
+    <string name="status_not_needed">本機無需偵測</string>
+    <string name="action_run">點一下重新偵測</string>
+    <string name="action_stop">點一下停止觀察</string>
+
+    <string name="detail_forking">正在探針行程中建立子行程 %1$d / %2$d…</string>
+    <string name="detail_settling">已建立 %1$d 個子行程，等待 %2$s 的確認視窗…</string>
+    <string name="detail_observing">在 %2$s 內建立了 %1$d 個子行程，都沒有被回收；背景繼續觀察 %3$s / %4$s。</string>
+    <string name="detail_limited">系統回收了 pid %1$d，發生在本輪第 %2$s；本輪共建立 %3$d 個子行程。</string>
+    <string name="detail_relaxed">%1$d 個子行程度過了 %2$s 的確認視窗與 %3$s 的觀察期，沒有任何一個被回收。</string>
+    <string name="detail_not_needed">本機為 API %1$d，沒有需要觸發的 phantom 行程上限。</string>
+    <string name="detail_fork_failed">建立到第 %1$d 個子行程時 fork() 失敗：行程自身任務數已達上限，或位址空間不足。</string>
+    <string name="detail_cancelled">在第 %1$d 個子行程處停止，本輪沒有新的結論。</string>
+    <string name="detail_rejected">上一輪還沒釋放子行程，請再點一次。</string>
+    <string name="detail_lost">探針行程沒有回應：啟動被拒絕，或它在開始前就被終止。請重新點按偵測。</string>
+    <string name="detail_unknown">還沒有任何實測。一輪偵測會建立 %1$d 個只休眠的子行程，再觀察系統是否會回收它們。</string>
+
+    <string name="summary_limited">記錄的那一輪有子行程被系統回收（共建立 %1$d 個）。</string>
+    <string name="summary_relaxed">記錄的那一輪 %1$d 個子行程全部存活。</string>
+    <string name="summary_not_needed">API %1$d 沒有 phantom 行程上限。</string>
+    <string name="detail_recorded">記錄於 %1$s。</string>
+    <string name="duration_seconds">%1$.1f 秒</string>
+
+    <string name="tip_cap">自 Android 12 起，每個應用程式最多 %1$d 個未經 zygote 的子行程（AOSP 預設值）。探針建立 %2$d 個只休眠的子行程：上限生效就會被回收，不生效則全部存活。</string>
+    <string name="footnote">結論只反映本機這一輪實測；變更系統設定後請重新偵測。</string>
+
+    <!-- 行程 -->
+    <string name="section_processes">行程</string>
+    <string name="process_host">宿主行程</string>
+    <string name="process_host_detail">pid %1$d · 只負責 Compose 介面與派送</string>
+    <string name="process_probe">探針行程（:phantom）</string>
+    <string name="process_probe_idle">閒置 · fork、waitpid、回收都在這裡</string>
+    <string name="process_probe_running">pid %1$d · 已建立 %2$d 個子行程</string>
+    <string name="process_handshake">交握行程（:probe）</string>
+    <string name="process_handshake_idle">閒置 · 刻意拉起的第二個應用程式行程</string>
+    <string name="process_handshake_seen">pid %1$d · 已回覆並結束</string>
+    <string name="process_handshake_missing">已送出廣播，本輪沒有收到回覆</string>
+
+    <!-- 流程 -->
+    <string name="section_pipeline">流程</string>
+    <string name="stage_fork">建立子行程</string>
+    <string name="stage_poke">戳第二個行程</string>
+    <string name="stage_settle">確認視窗</string>
+    <string name="stage_observe">持續觀察</string>
+    <string name="stage_fork_idle">未開始</string>
+    <string name="stage_fork_running">%1$d / %2$d</string>
+    <string name="stage_fork_done">%1$d 個子行程，耗時 %2$s</string>
+    <string name="stage_poke_idle">等待中</string>
+    <string name="stage_poke_sent">廣播已送出</string>
+    <string name="stage_poke_acked">pid %1$d 已回覆</string>
+    <string name="stage_settle_idle">等待建立</string>
+    <string name="stage_settle_reaped">pid %1$d 被回收</string>
+    <string name="stage_settle_done">經過 %1$s，無回收</string>
+    <string name="stage_observe_skipped">在確認視窗內定案</string>
+    <string name="stage_observe_idle">尚無結論</string>
+    <string name="stage_observe_running">%1$s / %2$s</string>
+    <string name="stage_observe_reaped">pid %1$d 被回收</string>
+    <string name="stage_observe_done">經過 %1$s，無回收</string>
+
+    <!-- 原理 -->
+    <string name="section_how">原理</string>
+    <string name="row_protocol">偵測流程</string>
+    <string name="row_protocol_desc">從 fork() 到結論的五個步驟</string>
+    <string name="row_isolation">為什麼必須獨立行程</string>
+    <string name="row_isolation_desc">mmap_lock 屬於行程，不屬於執行緒</string>
+    <string name="section_system">系統入口</string>
+    <string name="row_developer_options">開啟開發人員選項</string>
+    <string name="row_developer_options_desc">Android 14 以上：開啟「停用子行程限制」</string>
+
+    <string name="sheet_protocol_title">偵測流程</string>
+    <string name="sheet_protocol_lead">這個上限沒有任何公開 API 可讀，所以探針的做法是讓系統自己去執行它，再看結果。</string>
+    <string name="sheet_protocol_point_1">在探針行程中建立 66 個子行程。每個子行程只在迴圈裡 sleep()：不 exec()，也不返回 JVM，因此始終是 phantom 行程，不會自行結束。</string>
+    <string name="sheet_protocol_point_2">向第二個應用程式行程送出一則顯式廣播。AMS 是在應用程式行程集合變動時才重新清點 phantom 行程，所以這一步是觸發點，不是禮貌。</string>
+    <string name="sheet_protocol_point_3">對每個子行程輪詢 waitpid(pid, WNOHANG)。不是我們殺掉、卻回報已結束的子行程，就是被系統回收的——這是唯一採信的證據。</string>
+    <string name="sheet_protocol_point_4">結論提前發布。3 秒確認視窗內沒有回收，就先給出「未觀察到回收」；之後繼續觀察 60 秒，晚到的清理會立即改判。</string>
+    <string name="sheet_protocol_point_5">收尾時 SIGKILL 並回收剩餘子行程，然後讓探針行程結束。子行程帶有 PR_SET_PDEATHSIG，探針結束時它們一起消失。</string>
+
+    <string name="sheet_isolation_title">為什麼必須獨立行程</string>
+    <string name="sheet_isolation_lead">fork() 要複製呼叫方位址空間的分頁表，全程持有該位址空間 mmap_lock 的寫入側。</string>
+    <string name="sheet_isolation_point_1">UI 執行緒每一次配置都要取得同一把鎖的讀取側，只能排隊等 fork 結束。Compose 每一幀都在配置，所以同一個探針在 View 介面裡看不出問題，在 expressive 介面裡卻很明顯。</string>
+    <string name="sheet_isolation_point_2">在目前的硬體上，66 次 fork 約 300 毫秒。降低優先權、分批、sleep 都不會減少總量，只是把它攤到更多幀上。</string>
+    <string name="sheet_isolation_point_3">mmap_lock 屬於位址空間而不是執行緒，所以把 fork 移到同一行程的背景執行緒毫無作用。</string>
+    <string name="sheet_isolation_point_4">移進 :phantom 之後，探針有了自己的位址空間與鎖。介面行程一次都不會碰到 mmap_lock，點擊維持即時反應。</string>
+
+</resources>

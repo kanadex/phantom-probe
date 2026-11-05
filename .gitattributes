@@ -1,0 +1,7 @@
+# Keep the wrapper runnable on Linux runners and the batch files runnable on Windows.
+* text=auto
+gradlew text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+*.png binary
+*.jar binary

@@ -1,0 +1,67 @@
+name: build
+
+# Every push (any branch, and any tag you create by hand) plus every pull request.
+# This workflow only builds: tags and releases stay manual.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: assembleDebug
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      # The runner has no Android SDK. This installs cmdline-tools and accepts the licences;
+      # AGP then pulls the exact platform, build-tools, NDK and CMake the build asks for.
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      # Git on Windows stores gradlew without the executable bit.
+      - name: Make the wrapper executable
+        run: chmod +x gradlew
+
+      - name: Assemble
+        run: ./gradlew :app:assembleDebug --console=plain --stacktrace
+
+      # A renamed package or a renamed JNI class breaks the probe silently at runtime,
+      # so the entry points are checked against the packaged library, not the sources.
+      - name: Verify native entry points
+        run: |
+          set -euo pipefail
+          apk=$(find app/build/outputs/apk/debug -name '*.apk' | head -n 1)
+          unzip -p "$apk" lib/arm64-v8a/libphantom_probe.so > /tmp/libphantom_probe.so
+          prefix="Java_me_kanadex_phantomprobe_probe_PhantomProcessNative_"
+          for entry in forkNullLoop waitPidNoHang killPid reapPid; do
+            strings /tmp/libphantom_probe.so | grep -q "$prefix$entry"
+            echo "ok: $entry"
+          done
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: phantom-probe-debug
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 30

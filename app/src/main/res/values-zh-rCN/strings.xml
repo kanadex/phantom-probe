@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PhantomProbe</string>
+    <string name="app_title">phantom 进程限制</string>
+
+    <!-- 状态卡 -->
+    <string name="status_probing">正在探测…</string>
+    <string name="status_unknown">尚未探测</string>
+    <string name="status_relaxed">未观察到回收</string>
+    <string name="status_limited">子进程被系统回收</string>
+    <string name="status_not_needed">本机无需探测</string>
+    <string name="action_run">点击重新探测</string>
+    <string name="action_stop">点击停止观测</string>
+
+    <string name="detail_forking">正在探针进程里创建子进程 %1$d / %2$d…</string>
+    <string name="detail_settling">已创建 %1$d 个子进程，等待 %2$s 的确认窗口…</string>
+    <string name="detail_observing">在 %2$s 内创建了 %1$d 个子进程，都没有被回收；后台继续观察 %3$s / %4$s。</string>
+    <string name="detail_limited">系统回收了 pid %1$d，发生在本轮第 %2$s；本轮共创建 %3$d 个子进程。</string>
+    <string name="detail_relaxed">%1$d 个子进程挺过了 %2$s 的确认窗口和 %3$s 的观察期，没有一个被回收。</string>
+    <string name="detail_not_needed">本机为 API %1$d，没有需要触发的 phantom 进程上限。</string>
+    <string name="detail_fork_failed">创建到第 %1$d 个子进程时 fork() 失败：进程自身任务数到达上限，或地址空间不足。</string>
+    <string name="detail_cancelled">在第 %1$d 个子进程处停止，本轮没有新的结论。</string>
+    <string name="detail_rejected">上一轮还没释放子进程，请再点一次。</string>
+    <string name="detail_lost">探针进程没有回应：启动被拒绝，或它在开始前就被杀了。请重新点击探测。</string>
+    <string name="detail_unknown">还没有任何实测。一轮探测会创建 %1$d 个只休眠的子进程，然后观察系统会不会回收它们。</string>
+
+    <string name="summary_limited">记录的那一轮有子进程被系统回收（共创建 %1$d 个）。</string>
+    <string name="summary_relaxed">记录的那一轮 %1$d 个子进程全部存活。</string>
+    <string name="summary_not_needed">API %1$d 没有 phantom 进程上限。</string>
+    <string name="detail_recorded">记录于 %1$s。</string>
+    <string name="duration_seconds">%1$.1f 秒</string>
+
+    <string name="tip_cap">Android 12 起每个应用最多 %1$d 个未经 zygote 的子进程（AOSP 默认值）。探针创建 %2$d 个只休眠的子进程：上限生效它们就会被回收，不生效就全部活着。</string>
+    <string name="footnote">结论只反映本机这一轮实测；改动系统设置后请重新探测。</string>
+
+    <!-- 进程 -->
+    <string name="section_processes">进程</string>
+    <string name="process_host">宿主进程</string>
+    <string name="process_host_detail">pid %1$d · 只负责 Compose 界面与派发</string>
+    <string name="process_probe">探针进程（:phantom）</string>
+    <string name="process_probe_idle">空闲 · fork、waitpid、回收都在这里</string>
+    <string name="process_probe_running">pid %1$d · 已创建 %2$d 个子进程</string>
+    <string name="process_handshake">握手进程（:probe）</string>
+    <string name="process_handshake_idle">空闲 · 故意拉起的第二个应用进程</string>
+    <string name="process_handshake_seen">pid %1$d · 已回执并退出</string>
+    <string name="process_handshake_missing">已发出广播，本轮没有收到回执</string>
+
+    <!-- 流程 -->
+    <string name="section_pipeline">流程</string>
+    <string name="stage_fork">创建子进程</string>
+    <string name="stage_poke">戳第二个进程</string>
+    <string name="stage_settle">确认窗口</string>
+    <string name="stage_observe">持续观察</string>
+    <string name="stage_fork_idle">未开始</string>
+    <string name="stage_fork_running">%1$d / %2$d</string>
+    <string name="stage_fork_done">%1$d 个子进程，耗时 %2$s</string>
+    <string name="stage_poke_idle">等待中</string>
+    <string name="stage_poke_sent">广播已发出</string>
+    <string name="stage_poke_acked">pid %1$d 已回执</string>
+    <string name="stage_settle_idle">等待创建</string>
+    <string name="stage_settle_reaped">pid %1$d 被回收</string>
+    <string name="stage_settle_done">经过 %1$s，无回收</string>
+    <string name="stage_observe_skipped">在确认窗口内定案</string>
+    <string name="stage_observe_idle">暂无结论</string>
+    <string name="stage_observe_running">%1$s / %2$s</string>
+    <string name="stage_observe_reaped">pid %1$d 被回收</string>
+    <string name="stage_observe_done">经过 %1$s，无回收</string>
+
+    <!-- 原理 -->
+    <string name="section_how">原理</string>
+    <string name="row_protocol">检测流程</string>
+    <string name="row_protocol_desc">从 fork() 到结论的五个步骤</string>
+    <string name="row_isolation">为什么必须独立进程</string>
+    <string name="row_isolation_desc">mmap_lock 属于进程，不属于线程</string>
+    <string name="section_system">系统入口</string>
+    <string name="row_developer_options">打开开发者选项</string>
+    <string name="row_developer_options_desc">Android 14 及以上：打开「停止限制子进程」</string>
+
+    <string name="sheet_protocol_title">检测流程</string>
+    <string name="sheet_protocol_lead">这个上限没有任何公开 API 可读，所以探针的做法是让系统自己去执行它，然后看结果。</string>
+    <string name="sheet_protocol_point_1">在探针进程里创建 66 个子进程。每个子进程只在循环里 sleep()：不 exec()，也不返回 JVM，因此始终是 phantom 进程，不会自己退出。</string>
+    <string name="sheet_protocol_point_2">向第二个应用进程发一条显式广播。AMS 在应用进程集合发生变化时才重新清点 phantom 进程，所以这一步是触发点，不是礼节。</string>
+    <string name="sheet_protocol_point_3">对每个子进程轮询 waitpid(pid, WNOHANG)。不是我们杀死的子进程却报告已结束，说明是系统回收的——这是唯一采信的证据。</string>
+    <string name="sheet_protocol_point_4">结论提前发布。3 秒确认窗口内没有回收，就先给出「未观察到回收」；此后继续观察 60 秒，晚到的清理会立刻改判。</string>
+    <string name="sheet_protocol_point_5">收尾时 SIGKILL 并回收剩余子进程，然后让探针进程退出。子进程带 PR_SET_PDEATHSIG，探针死掉时它们一起结束。</string>
+
+    <string name="sheet_isolation_title">为什么必须独立进程</string>
+    <string name="sheet_isolation_lead">fork() 要复制调用方地址空间的页表，全程持有该地址空间 mmap_lock 的写侧。</string>
+    <string name="sheet_isolation_point_1">UI 线程每一次分配都要拿同一把锁的读侧，只能排队等 fork 结束。Compose 每帧都在分配，所以同一个探针在 View 界面里看不出问题，在 expressive 界面里却很刺眼。</string>
+    <string name="sheet_isolation_point_2">在当前硬件上，66 次 fork 约 300 毫秒。降优先级、分批、sleep 都不会减少这个总量，只是把它摊到更多帧上。</string>
+    <string name="sheet_isolation_point_3">mmap_lock 属于地址空间而不是线程，所以把 fork 挪到同一进程的后台线程毫无作用。</string>
+    <string name="sheet_isolation_point_4">挪进 :phantom 之后，探针有了自己的地址空间和锁。界面进程一次都不会碰到 mmap_lock，点击保持即时响应。</string>
+
+</resources>

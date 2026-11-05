@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PhantomProbe</string>
+    <string name="app_title">phantom プロセス制限</string>
+
+    <!-- ステータスカード -->
+    <string name="status_probing">検出中…</string>
+    <string name="status_unknown">未検出</string>
+    <string name="status_relaxed">回収は観測されず</string>
+    <string name="status_limited">子プロセスがシステムに回収された</string>
+    <string name="status_not_needed">この端末では不要</string>
+    <string name="action_run">タップして再検出</string>
+    <string name="action_stop">タップして停止</string>
+
+    <string name="detail_forking">プローブプロセスで子プロセスを作成中 %1$d / %2$d…</string>
+    <string name="detail_settling">子プロセス %1$d 個を作成しました。%2$s の確認待ちです…</string>
+    <string name="detail_observing">%2$s で子プロセス %1$d 個を作成し、回収はありませんでした。バックグラウンドで %3$s / %4$s 観測中です。</string>
+    <string name="detail_limited">システムが pid %1$d を回収しました（実行開始から %2$s、作成数 %3$d）。</string>
+    <string name="detail_relaxed">子プロセス %1$d 個が %2$s の確認と %3$s の観測を生き延び、回収されたものはありません。</string>
+    <string name="detail_not_needed">この端末は API %1$d です。phantom プロセスの上限は存在しないため、検出する対象がありません。</string>
+    <string name="detail_fork_failed">%1$d 個目の子プロセスで fork() に失敗しました。プロセス自身のタスク上限か、アドレス空間の不足です。</string>
+    <string name="detail_cancelled">子プロセス %1$d 個の時点で停止しました。今回の実行では新しい判定はありません。</string>
+    <string name="detail_rejected">前回の実行がまだ子プロセスを解放していません。もう一度タップしてください。</string>
+    <string name="detail_lost">プローブプロセスが応答しませんでした。起動を拒否されたか、開始前に終了しています。もう一度タップしてください。</string>
+    <string name="detail_unknown">まだ測定結果はありません。1 回の検出でスリープするだけの子プロセスを %1$d 個作成し、システムが回収するかを見ます。</string>
+
+    <string name="summary_limited">記録された実行で子プロセスが回収されました（作成数 %1$d）。</string>
+    <string name="summary_relaxed">記録された実行では子プロセス %1$d 個がすべて生存しました。</string>
+    <string name="summary_not_needed">API %1$d に phantom プロセスの上限はありません。</string>
+    <string name="detail_recorded">%1$s に記録。</string>
+    <string name="duration_seconds">%1$.1f 秒</string>
+
+    <string name="tip_cap">Android 12 以降、アプリごとに zygote を経由しない子プロセスは %1$d 個までです（AOSP の既定値）。本プローブはスリープするだけの子プロセスを %2$d 個作成します。上限が効いていれば回収され、効いていなければすべて生存します。</string>
+    <string name="footnote">判定はこの端末での 1 回の実行結果です。システム設定を変更したら再検出してください。</string>
+
+    <!-- プロセス -->
+    <string name="section_processes">プロセス</string>
+    <string name="process_host">ホストプロセス</string>
+    <string name="process_host_detail">pid %1$d · Compose UI とディスパッチのみ</string>
+    <string name="process_probe">プローブプロセス（:phantom）</string>
+    <string name="process_probe_idle">待機 · fork、waitpid、回収はここ</string>
+    <string name="process_probe_running">pid %1$d · 子プロセス %2$d 個を作成</string>
+    <string name="process_handshake">ハンドシェイクプロセス（:probe）</string>
+    <string name="process_handshake_idle">待機 · 意図的に起こす 2 つ目のアプリプロセス</string>
+    <string name="process_handshake_seen">pid %1$d · 応答して終了</string>
+    <string name="process_handshake_missing">ブロードキャストは送信、今回の応答なし</string>
+
+    <!-- パイプライン -->
+    <string name="section_pipeline">パイプライン</string>
+    <string name="stage_fork">子プロセスの作成</string>
+    <string name="stage_poke">2 つ目のプロセスを叩く</string>
+    <string name="stage_settle">確認待ち</string>
+    <string name="stage_observe">継続観測</string>
+    <string name="stage_fork_idle">未開始</string>
+    <string name="stage_fork_running">%1$d / %2$d</string>
+    <string name="stage_fork_done">%1$d 個、%2$s</string>
+    <string name="stage_poke_idle">待機中</string>
+    <string name="stage_poke_sent">ブロードキャスト送信済み</string>
+    <string name="stage_poke_acked">pid %1$d が応答</string>
+    <string name="stage_settle_idle">作成待ち</string>
+    <string name="stage_settle_reaped">pid %1$d を回収</string>
+    <string name="stage_settle_done">%1$s 経過、回収なし</string>
+    <string name="stage_observe_skipped">確認待ちで判定済み</string>
+    <string name="stage_observe_idle">判定なし</string>
+    <string name="stage_observe_running">%1$s / %2$s</string>
+    <string name="stage_observe_reaped">pid %1$d を回収</string>
+    <string name="stage_observe_done">%1$s 経過、回収なし</string>
+
+    <!-- 仕組み -->
+    <string name="section_how">仕組み</string>
+    <string name="row_protocol">検出手順</string>
+    <string name="row_protocol_desc">fork() から判定までの 5 ステップ</string>
+    <string name="row_isolation">別プロセスが必要な理由</string>
+    <string name="row_isolation_desc">mmap_lock はスレッドではなくプロセスに属する</string>
+    <string name="section_system">システム設定</string>
+    <string name="row_developer_options">開発者向けオプションを開く</string>
+    <string name="row_developer_options_desc">Android 14 以降：「子プロセスの制限を無効にする」をオン</string>
+
+    <string name="sheet_protocol_title">検出手順</string>
+    <string name="sheet_protocol_lead">この上限を読める公開 API はありません。そこでプローブはシステム自身に上限を適用させ、その結果を観測します。</string>
+    <string name="sheet_protocol_point_1">プローブプロセスで子プロセスを 66 個作成します。各子プロセスはループ内で sleep() するだけで、exec() も JVM への復帰もしません。したがって phantom プロセスのままで、自ら終了することはありません。</string>
+    <string name="sheet_protocol_point_2">2 つ目のアプリプロセスへ明示的ブロードキャストを送ります。AMS はアプリのプロセス集合が変わったときに phantom プロセスを数え直すため、この一手が引き金になります。</string>
+    <string name="sheet_protocol_point_3">子プロセスごとに waitpid(pid, WNOHANG) をポーリングします。こちらが殺していないのに終了を報告した子は、システムに回収された証拠です。採用するのはこの 1 点だけです。</string>
+    <string name="sheet_protocol_point_4">判定は早めに公開します。3 秒の確認待ちで回収がなければ「回収は観測されず」とし、その後 60 秒は観測を続けて、遅れて届いた回収で判定を更新します。</string>
+    <string name="sheet_protocol_point_5">残った子プロセスを SIGKILL して回収し、プローブプロセスを終了します。子プロセスには PR_SET_PDEATHSIG があるため、プローブが消えれば道連れになります。</string>
+
+    <string name="sheet_isolation_title">別プロセスが必要な理由</string>
+    <string name="sheet_isolation_lead">fork() は呼び出し元アドレス空間のページテーブルを複製し、その間ずっと mmap_lock の書き込み側を保持します。</string>
+    <string name="sheet_isolation_point_1">UI スレッドは毎フレームの確保で同じ mmap_lock の読み取り側を必要とするため、fork が終わるまで待たされます。Compose は毎フレーム確保するので、同じプローブが View のアプリでは目立たず、expressive な UI ではっきり分かります。</string>
+    <string name="sheet_isolation_point_2">現行ハードウェアでは 66 回の fork に約 300 ミリ秒かかります。優先度を下げても、分割しても、sleep を挟んでも総量は減らず、フレームに薄く広がるだけです。</string>
+    <string name="sheet_isolation_point_3">mmap_lock はスレッドではなくアドレス空間に属するため、同じプロセスの別スレッドへ移しても意味がありません。</string>
+    <string name="sheet_isolation_point_4">:phantom へ移すと、プローブは独自のアドレス空間とロックを持ちます。UI プロセスは mmap_lock に一切触れず、タップは即座に反応します。</string>
+
+</resources>

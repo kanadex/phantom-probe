@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ring plus dot: one address space watching its children. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M76,54 A22,22 0 1,0 32,54 A22,22 0 1,0 76,54 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3" />
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M61,54 A7,7 0 1,0 47,54 A7,7 0 1,0 61,54 Z" />
+
+</vector>
